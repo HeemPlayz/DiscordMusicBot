@@ -290,7 +290,7 @@ function main() {
 	bot.on("messageCreate", (msg) => {
 		//Join a voice channel
 		let guild = activeGuilds.get(msg.member.guild.id);
-		if (msg.content == "~~!join") {
+		if (msg.content == ".join") {
 			if (guild && guild.initialised) {
 				console.log("Already in guild ID " + msg.member.guild.id + "!");
 			} else {
@@ -306,9 +306,9 @@ function main() {
         //These commands can be executed by anybody
         if (!guild)
             return;
-        if (msg.content == "~~!np") {
+        if (msg.content == ".np") {
             listNowPlaying(guild, msg.channel.id);
-        } else if (msg.content == "~~!queue") { //List the current queue
+        } else if (msg.content == ".queue") { //List the current queue
             listQueue(guild, msg.channel.id);
         }
 
@@ -316,26 +316,26 @@ function main() {
         if (!checkMod(msg))
             return;
 		let url;
-		if (msg.content == "~~!skip") { //Skip the current track in the queue
+		if (msg.content == ".skip") { //Skip the current track in the queue
 			skipSong(guild);
-		} else if (msg.content.startsWith("~~!add ")) { //Add a song to the queue
+		} else if (msg.content.startsWith(".addsong")) { //Add a song to the queue
 			url = msg.content.substr(7);
 			addSong(guild, url, msg.channel.id);
-		} else if (msg.content.startsWith("~~!addraw ")) { //Add a direct mp3/stream to the queue
+		} else if (msg.content.startsWith(".addraw ")) { //Add a direct mp3/stream to the queue
 			url = msg.content.substr(10);
 			if (!url.startsWith("http://") && !url.startsWith("https://"))
 				url = "http://" + url;
 			addSongRaw(guild, { title: 'Direct stream', url: url }, msg.channel.id);
-		} else if (msg.content == "~~!kick") { //Kick the bot from the VC
+		} else if (msg.content == ".leave") { //Kick the bot from the VC
 			guild.initialised = false;
 			bot.leaveVoiceChannel(guild.voiceChannelID);
-		} else if (msg.content.startsWith("~~!vol ")) { //Set the current volume
+		} else if (msg.content.startsWith(".vol ")) { //Set the current volume
 			let volumeString = msg.content.substr(7);
 			let volume = parseFloat(volumeString);
 			if (volume != NaN) {
 				guild.voiceConn.setVolume(volume);
 			}
-        } else if (msg.content == "~~!clear") { //Clear the queue
+        } else if (msg.content == ".queueclr") { //Clear the queue
 			let firstSong = guild.queue[0];
 			guild.queue = [];
 			if (firstSong)
@@ -345,7 +345,7 @@ function main() {
         //And these commands require owner AND mod permissions
         if (!checkOwner(msg))
             return;
-        if (msg.content.startsWith("~~!eval ")) { //Dynamically evaluate javascript commands
+        if (msg.content.startsWith(".eval ")) { //Dynamically evaluate javascript commands
             let command = msg.content.substr(8);
             let result;
             try {
@@ -354,7 +354,7 @@ function main() {
                 result = e;
             }
             bot.createMessage(msg.channel.id, '' + result); //TODO: split messages over 2k limit
-        } else if (msg.content.startsWith("~~!addmod ")) { //Adds a new user to the modlist
+        } else if (msg.content.startsWith(".addmod ")) { //Adds a new user to the modlist
             let userId = msg.content.substr(10);
             mods.push(userId);
             fs.writeFile("config.json", JSON.stringify(configObject), (err) => {
