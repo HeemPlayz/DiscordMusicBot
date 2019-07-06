@@ -318,7 +318,7 @@ function main() {
 		let url;
 		if (msg.content == ".skip") { //Skip the current track in the queue
 			skipSong(guild);
-		} else if (msg.content.startsWith(".addsong")) { //Add a song to the queue
+		} else if (msg.content.startsWith(".play")) { //Add a song to the queue
 			url = msg.content.substr(7);
 			addSong(guild, url, msg.channel.id);
 		} else if (msg.content.startsWith(".addraw ")) { //Add a direct mp3/stream to the queue
